@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Renta Mexico Network — Rentals Across Mexico</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --sand: #F5F0E8; --sand-dark: #E8DFD0; --terracotta: #C4654A; --terracotta-dark: #A8503A;
+  --ocean: #1B6B7D; --ocean-deep: #0E4A58; --midnight: #1A1A2E; --gold: #D4A843;
+  --gold-light: #E8C96A; --sage: #7A9E7E; --cream: #FFFDF7; --warm-white: #FAF8F3;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--midnight); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+body::after { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; }
+
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.25rem 3rem; display: flex; justify-content: space-between; align-items: center; transition: all 0.5s ease; }
+nav.scrolled { background: rgba(26, 26, 46, 0.92); backdrop-filter: blur(20px); padding: 0.8rem 3rem; box-shadow: 0 4px 30px rgba(0,0,0,0.15); }
+.nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: white; }
+.nav-logo-icon { width: 42px; height: 42px; background: var(--terracotta); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.1rem; color: white; transition: transform 0.3s ease; }
+.nav-logo:hover .nav-logo-icon { transform: rotate(-5deg) scale(1.05); }
+.nav-logo-text { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; letter-spacing: 0.5px; }
+.nav-logo-text span { color: var(--gold-light); }
+.nav-links { display: flex; gap: 2.5rem; align-items: center; list-style: none; }
+.nav-links a { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.85rem; font-weight: 500; letter-spacing: 1.2px; text-transform: uppercase; transition: color 0.3s; }
+.nav-links a:hover { color: var(--gold-light); }
+.nav-cta { background: var(--terracotta) !important; color: white !important; padding: 0.6rem 1.5rem; border-radius: 50px; font-size: 0.8rem !important; letter-spacing: 1.5px !important; transition: background 0.3s, transform 0.3s !important; }
+.nav-cta:hover { background: var(--terracotta-dark) !important; transform: translateY(-1px); }
+.nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+.nav-toggle span { display: block; width: 24px; height: 2px; background: white; border-radius: 2px; transition: 0.3s; }
+
+.hero { position: relative; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white; overflow: hidden; }
+.hero-bg { position: absolute; inset: 0; background: linear-gradient(170deg, rgba(14,74,88,0.85) 0%, rgba(26,26,46,0.7) 40%, rgba(196,101,74,0.6) 100%), linear-gradient(to bottom, #0E4A58 0%, #1B6B7D 30%, #C4654A 70%, #D4A843 100%); z-index: 0; }
+.hero-shape { position: absolute; border-radius: 50%; opacity: 0.08; z-index: 1; }
+.hero-shape-1 { width: 600px; height: 600px; background: var(--gold); top: -200px; right: -150px; animation: float1 20s ease-in-out infinite; }
+.hero-shape-2 { width: 400px; height: 400px; background: var(--terracotta); bottom: -100px; left: -100px; animation: float2 25s ease-in-out infinite; }
+.hero-shape-3 { width: 250px; height: 250px; background: var(--sage); top: 30%; left: 10%; animation: float3 18s ease-in-out infinite; }
+@keyframes float1 { 0%, 100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-30px,40px) scale(1.05); } }
+@keyframes float2 { 0%, 100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(40px,-30px) rotate(10deg); } }
+@keyframes float3 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(20px,20px); } }
+.hero-content { position: relative; z-index: 2; max-width: 920px; padding: 0 2rem; }
+.hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; padding: 0.5rem 1.25rem; font-size: 0.75rem; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 600; margin-bottom: 2rem; backdrop-filter: blur(10px); animation: fadeInDown 1s ease 0.2s both; }
+.hero-badge-dot { width: 6px; height: 6px; background: var(--gold-light); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 7vw, 5.5rem); font-weight: 900; line-height: 1.05; margin-bottom: 1.5rem; animation: fadeInUp 1s ease 0.4s both; }
+.hero h1 em { font-style: italic; color: var(--gold-light); font-weight: 400; }
+.hero-sub { font-size: clamp(1rem, 2vw, 1.2rem); font-weight: 300; line-height: 1.75; opacity: 0.85; max-width: 620px; margin: 0 auto 2.5rem; animation: fadeInUp 1s ease 0.6s both; }
+.hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; animation: fadeInUp 1s ease 0.8s both; }
+.btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 2.25rem; border-radius: 60px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; cursor: pointer; border: none; transition: all 0.4s ease; }
+.btn-primary { background: var(--terracotta); color: white; box-shadow: 0 8px 30px rgba(196,101,74,0.35); }
+.btn-primary:hover { background: var(--terracotta-dark); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(196,101,74,0.45); }
+.btn-ghost { background: rgba(255,255,255,0.08); color: white; border: 1.5px solid rgba(255,255,255,0.3); backdrop-filter: blur(5px); }
+.btn-ghost:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.5); transform: translateY(-3px); }
+.hero-scroll { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: rgba(255,255,255,0.5); font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; animation: fadeInUp 1s ease 1.2s both; }
+.hero-scroll-line { width: 1px; height: 50px; background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent); animation: scrollLine 2s ease-in-out infinite; }
+@keyframes scrollLine { 0%, 100% { transform: scaleY(1); opacity: 0.5; } 50% { transform: scaleY(0.5); opacity: 1; } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+.type-ribbon { background: var(--midnight); padding: 2.75rem 2rem; overflow: hidden; }
+.type-ribbon-track { display: flex; gap: 3rem; animation: marquee 30s linear infinite; width: max-content; }
+.type-ribbon-track span { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 400; color: rgba(255,255,255,0.3); white-space: nowrap; letter-spacing: 2px; text-transform: uppercase; }
+.type-ribbon-track span.accent { color: var(--gold-light); opacity: 0.7; }
+.type-ribbon-track .dot { color: var(--terracotta); font-size: 0.6rem; display: flex; align-items: center; }
+@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+.section-header { text-align: center; margin-bottom: 4rem; }
+.section-tag { display: inline-block; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; font-weight: 600; color: var(--terracotta); margin-bottom: 1rem; }
+.section-tag::before, .section-tag::after { content: ''; display: inline-block; width: 30px; height: 1px; background: var(--terracotta); vertical-align: middle; margin: 0 0.75rem; opacity: 0.5; }
+.section-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3.25rem); font-weight: 900; line-height: 1.15; color: var(--midnight); }
+.section-title em { font-style: italic; font-weight: 400; color: var(--terracotta); }
+.section-subtitle { max-width: 600px; margin: 1rem auto 0; font-size: 1rem; color: #888; line-height: 1.7; font-weight: 300; }
+
+.destinations { padding: 7rem 2rem; background: var(--warm-white); }
+.destinations-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 2.5rem; }
+.dest-card { position: relative; border-radius: 20px; overflow: hidden; background: white; box-shadow: 0 4px 25px rgba(0,0,0,0.06); transition: all 0.5s cubic-bezier(0.23,1,0.32,1); cursor: pointer; text-decoration: none; color: inherit; display: block; }
+.dest-card:hover { transform: translateY(-8px); box-shadow: 0 20px 60px rgba(0,0,0,0.12); }
+.dest-card-visual { position: relative; height: 280px; overflow: hidden; }
+.dest-card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; }
+.dest-card:hover .dest-card-img { transform: scale(1.08); }
+.dest-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(26,26,46,0.8) 0%, transparent 60%); }
+.dest-card-status { position: absolute; top: 1.25rem; right: 1.25rem; padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.65rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
+.status-live { background: var(--sage); color: white; }
+.status-coming { background: var(--gold); color: var(--midnight); }
+.dest-card-location { position: absolute; bottom: 1.25rem; left: 1.5rem; color: white; }
+.dest-card-location h3 { font-family: 'Playfair Display', serif; font-size: 1.65rem; font-weight: 700; margin-bottom: 0.2rem; }
+.dest-card-location p { font-size: 0.8rem; opacity: 0.75; }
+.dest-card-body { padding: 1.5rem; }
+.dest-card-desc { font-size: 0.9rem; line-height: 1.65; color: #666; margin-bottom: 1.25rem; }
+.dest-card-types { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+.type-tag { padding: 0.3rem 0.75rem; border-radius: 50px; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px; background: var(--sand); color: var(--ocean-deep); }
+.dest-card-link { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 600; color: var(--terracotta); letter-spacing: 1px; text-transform: uppercase; transition: gap 0.3s; }
+.dest-card:hover .dest-card-link { gap: 0.85rem; }
+.dest-card-link svg { width: 16px; height: 16px; transition: transform 0.3s; }
+.dest-card:hover .dest-card-link svg { transform: translateX(3px); }
+.dest-card-coming { border: 2px dashed var(--sand-dark); background: var(--warm-white); box-shadow: none; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 520px; text-align: center; padding: 3rem; }
+.dest-card-coming:hover { border-color: var(--terracotta); background: white; }
+.coming-icon { width: 80px; height: 80px; border-radius: 50%; background: var(--sand); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 2rem; }
+.dest-card-coming h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; }
+.dest-card-coming p { font-size: 0.9rem; color: #888; line-height: 1.6; max-width: 280px; }
+
+.prop-types { padding: 7rem 2rem; background: var(--cream); }
+.prop-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+.prop-card { background: white; border-radius: 16px; padding: 2rem 1.5rem; text-align: center; border: 1.5px solid var(--sand-dark); transition: all 0.4s ease; cursor: default; }
+.prop-card:hover { border-color: var(--terracotta); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
+.prop-card-icon { width: 56px; height: 56px; border-radius: 14px; background: var(--sand); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.5rem; transition: background 0.3s; }
+.prop-card:hover .prop-card-icon { background: var(--terracotta); }
+.prop-card:hover .prop-card-icon span { filter: brightness(10); }
+.prop-card h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
+.prop-card p { font-size: 0.8rem; color: #999; line-height: 1.5; }
+
+.how-it-works { padding: 7rem 2rem; background: var(--midnight); color: white; position: relative; overflow: hidden; }
+.how-it-works::before { content: ''; position: absolute; width: 500px; height: 500px; background: radial-gradient(circle, rgba(212,168,67,0.08) 0%, transparent 70%); top: -200px; right: -100px; border-radius: 50%; }
+.how-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem; position: relative; z-index: 1; }
+.how-step { text-align: center; padding: 2rem; }
+.how-number { font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 900; color: var(--terracotta); opacity: 0.3; line-height: 1; margin-bottom: 1rem; }
+.how-step h3 { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700; margin-bottom: 0.75rem; }
+.how-step p { font-size: 0.9rem; line-height: 1.7; opacity: 0.65; font-weight: 300; }
+
+.audience { padding: 6rem 2rem; background: var(--warm-white); }
+.audience-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; }
+.audience-card { background: white; border-radius: 18px; padding: 2.25rem; border: 1.5px solid var(--sand-dark); transition: all 0.4s ease; }
+.audience-card:hover { border-color: var(--ocean); box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
+.audience-card-emoji { font-size: 2rem; margin-bottom: 1rem; }
+.audience-card h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+.audience-card p { font-size: 0.88rem; color: #777; line-height: 1.65; }
+
+.about { padding: 7rem 2rem; background: var(--cream); }
+.about-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+.about-map { width: 100%; border-radius: 20px; overflow: hidden; background: var(--sand); aspect-ratio: 1; display: flex; align-items: center; justify-content: center; }
+.about-map svg { width: 90%; height: 90%; }
+.map-dot { fill: var(--terracotta); animation: mapPulse 3s ease-in-out infinite; }
+.map-dot:nth-child(2) { animation-delay: 1s; }
+@keyframes mapPulse { 0%, 100% { r: 6; opacity: 1; } 50% { r: 10; opacity: 0.6; } }
+.about-content h2 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 3.5vw, 2.75rem); font-weight: 900; line-height: 1.15; margin-bottom: 1.5rem; }
+.about-content h2 em { font-style: italic; font-weight: 400; color: var(--terracotta); }
+.about-content p { font-size: 1rem; line-height: 1.8; color: #555; margin-bottom: 1.25rem; }
+.about-features { margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem; }
+.about-feature { display: flex; align-items: flex-start; gap: 1rem; }
+.about-feature-icon { width: 40px; height: 40px; min-width: 40px; border-radius: 10px; background: var(--sand); display: flex; align-items: center; justify-content: center; color: var(--terracotta); font-size: 1.1rem; }
+.about-feature-text h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem; }
+.about-feature-text p { font-size: 0.85rem; color: #888; margin-bottom: 0; line-height: 1.5; }
+
+.cta-banner { padding: 6rem 2rem; background: linear-gradient(135deg, var(--ocean-deep), var(--terracotta)); text-align: center; color: white; position: relative; overflow: hidden; }
+.cta-banner::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+.cta-banner h2 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; margin-bottom: 1rem; position: relative; }
+.cta-banner h2 em { font-style: italic; font-weight: 400; }
+.cta-banner p { font-size: 1.1rem; opacity: 0.85; max-width: 580px; margin: 0 auto 2rem; font-weight: 300; position: relative; line-height: 1.7; }
+.cta-banner .btn { position: relative; }
+
+footer { background: var(--midnight); color: white; padding: 5rem 2rem 2rem; }
+.footer-inner { max-width: 1200px; margin: 0 auto; }
+.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 4rem; }
+.footer-brand p { font-size: 0.9rem; line-height: 1.7; opacity: 0.55; max-width: 280px; margin-top: 1rem; }
+.footer-col h4 { font-size: 0.7rem; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 700; margin-bottom: 1.25rem; color: var(--gold-light); }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+.footer-col a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.3s; }
+.footer-col a:hover { color: white; }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.footer-bottom p { font-size: 0.75rem; opacity: 0.35; }
+.footer-socials { display: flex; gap: 1rem; }
+.footer-socials a { width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.8rem; transition: all 0.3s; }
+.footer-socials a:hover { background: var(--terracotta); border-color: var(--terracotta); color: white; }
+
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .nav-toggle { display: flex; }
+  .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(26,26,46,0.97); padding: 2rem; gap: 1.5rem; backdrop-filter: blur(20px); }
+  .destinations-grid { grid-template-columns: 1fr; max-width: 500px; }
+  .how-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .about-inner { grid-template-columns: 1fr; gap: 3rem; }
+  .about-visual { order: -1; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .prop-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  nav { padding: 1rem 1.5rem; }
+  nav.scrolled { padding: 0.7rem 1.5rem; }
+  .hero-actions { flex-direction: column; align-items: center; }
+  .footer-top { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+  .audience-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav id="mainNav">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">Rm</div>
+    <div class="nav-logo-text">Renta<span>MXN</span></div>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#destinations">Destinations</a></li>
+    <li><a href="#types">Property Types</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#about">Our Network</a></li>
+    <li><a href="#contact" class="nav-cta">List a Property</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-shape hero-shape-1"></div>
+  <div class="hero-shape hero-shape-2"></div>
+  <div class="hero-shape hero-shape-3"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Mexico's Rental Network
+    </div>
+    <h1>Rent Anything,<br>Anywhere in <em>México</em></h1>
+    <p class="hero-sub">Houses, condos, apartments, hostels, long-term leases, vacation stays — one network connecting you to every kind of rental across Mexico's best destinations.</p>
+    <div class="hero-actions">
+      <a href="#destinations" class="btn btn-primary">Explore Destinations <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a href="#types" class="btn btn-ghost">See Property Types</a>
+    </div>
+  </div>
+  <div class="hero-scroll"><span>Scroll</span><div class="hero-scroll-line"></div></div>
+</section>
+
+<div class="type-ribbon">
+  <div class="type-ribbon-track">
+    <span>Houses</span><span class="dot">●</span>
+    <span class="accent">Condos</span><span class="dot">●</span>
+    <span>Apartments</span><span class="dot">●</span>
+    <span class="accent">Hostels</span><span class="dot">●</span>
+    <span>Long-Term Leases</span><span class="dot">●</span>
+    <span class="accent">Vacation Rentals</span><span class="dot">●</span>
+    <span>Rooms</span><span class="dot">●</span>
+    <span class="accent">Studios</span><span class="dot">●</span>
+    <span>Beachfront Villas</span><span class="dot">●</span>
+    <span class="accent">Commercial Spaces</span><span class="dot">●</span>
+    <span>Furnished Monthly</span><span class="dot">●</span>
+    <span class="accent">Co-Living</span><span class="dot">●</span>
+    <span>Houses</span><span class="dot">●</span>
+    <span class="accent">Condos</span><span class="dot">●</span>
+    <span>Apartments</span><span class="dot">●</span>
+    <span class="accent">Hostels</span><span class="dot">●</span>
+    <span>Long-Term Leases</span><span class="dot">●</span>
+    <span class="accent">Vacation Rentals</span><span class="dot">●</span>
+    <span>Rooms</span><span class="dot">●</span>
+    <span class="accent">Studios</span><span class="dot">●</span>
+    <span>Beachfront Villas</span><span class="dot">●</span>
+    <span class="accent">Commercial Spaces</span><span class="dot">●</span>
+    <span>Furnished Monthly</span><span class="dot">●</span>
+    <span class="accent">Co-Living</span><span class="dot">●</span>
+  </div>
+</div>
+
+<section class="destinations" id="destinations">
+  <div class="section-header">
+    <div class="section-tag">Our Destinations</div>
+    <h2 class="section-title">Choose Your <em>Region</em></h2>
+    <p class="section-subtitle">Each destination has its own dedicated site with local listings, local knowledge, and every type of rental available in the area.</p>
+  </div>
+  <div class="destinations-grid">
+    <a href="https://rentapuertoescondido.com" class="dest-card" target="_blank">
+      <div class="dest-card-visual">
+        <img class="dest-card-img" src="https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=600&h=400&fit=crop&q=80" alt="Puerto Escondido coast" onerror="this.style.background='linear-gradient(135deg, #1B6B7D, #0E4A58)'; this.style.minHeight='280px';">
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-status status-live">● Live</div>
+        <div class="dest-card-location"><h3>Puerto Escondido</h3><p>Oaxaca Coast</p></div>
+      </div>
+      <div class="dest-card-body">
+        <p class="dest-card-desc">Surf breaks, bohemian neighborhoods, and Oaxacan soul. Rentals from beachfront houses to downtown apartments, monthly leases to weekend getaways.</p>
+        <div class="dest-card-types">
+          <span class="type-tag">Houses</span><span class="type-tag">Condos</span><span class="type-tag">Hostels</span><span class="type-tag">Long-Term</span><span class="type-tag">Vacation</span>
+        </div>
+        <div class="dest-card-link">Browse Listings <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </div>
+    </a>
+    <a href="https://rentalakechapala.com" class="dest-card" target="_blank">
+      <div class="dest-card-visual">
+        <img class="dest-card-img" src="https://images.unsplash.com/photo-1518105779142-d975f22f1b0a?w=600&h=400&fit=crop&q=80" alt="Lake Chapala" onerror="this.style.background='linear-gradient(135deg, #7A9E7E, #4A7A5E)'; this.style.minHeight='280px';">
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-status status-live">● Live</div>
+        <div class="dest-card-location"><h3>Lake Chapala</h3><p>Jalisco Highlands</p></div>
+      </div>
+      <div class="dest-card-body">
+        <p class="dest-card-desc">Mexico's largest lake, eternal spring weather, and a thriving expat community. From lakeside casas to modern condos, furnished monthly to year-long leases.</p>
+        <div class="dest-card-types">
+          <span class="type-tag">Houses</span><span class="type-tag">Condos</span><span class="type-tag">Apartments</span><span class="type-tag">Long-Term</span><span class="type-tag">Furnished</span>
+        </div>
+        <div class="dest-card-link">Browse Listings <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </div>
+    </a>
+    <div class="dest-card dest-card-coming">
+      <div class="coming-icon">🇲🇽</div>
+      <h3>More Regions Coming</h3>
+      <p>We're expanding across Mexico. San Miguel de Allende, Sayulita, Mérida, Playa del Carmen — and beyond.</p>
+      <div style="margin-top: 1.5rem;">
+        <a href="#contact" class="btn btn-primary" style="font-size: 0.75rem; padding: 0.8rem 1.75rem;">Suggest a Region</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="prop-types" id="types">
+  <div class="section-header">
+    <div class="section-tag">Every Kind of Rental</div>
+    <h2 class="section-title">Not Just Vacations.<br><em>Every Way to Live.</em></h2>
+    <p class="section-subtitle">Whether you're relocating, traveling, working remotely, or investing — we list every rental type so you find exactly what fits.</p>
+  </div>
+  <div class="prop-grid">
+    <div class="prop-card"><div class="prop-card-icon"><span>🏠</span></div><h3>Houses</h3><p>Full homes for families, groups, or anyone wanting space and privacy</p></div>
+    <div class="prop-card"><div class="prop-card-icon"><span>🏢</span></div><h3>Condos</h3><p>Modern units with amenities, pools, security, and community</p></div>
+    <div class="prop-card"><div class="prop-card-icon"><span>🛏️</span></div><h3>Apartments</h3><p>Studios to multi-bedroom flats for every budget and timeline</p></div>
+    <div class="prop-card"><div class="prop-card-icon"><span>🎒</span></div><h3>Hostels</h3><p>Budget-friendly dorms and private rooms for travelers</p></div>
+    <div class="prop-card"><div class="prop-card-icon"><span>📅</span></div><h3>Long-Term</h3><p>6-month to multi-year leases for expats and relocators</p></div>
+    <div class="prop-card"><div class="prop-card-icon"><span>🌴</span></div><h3>Vacation</h3><p>Short stays for holidays, weekends, and seasonal trips</p></div>
+    <div class="prop-card"><div class="prop-card-icon"><span>💻</span></div><h3>Co-Living</h3><p>Shared spaces built for remote workers and digital nomads</p></div>
+    <div class="prop-card"><div class="prop-card-icon"><span>🏪</span></div><h3>Commercial</h3><p>Storefronts, offices, and workspaces for your business</p></div>
+  </div>
+</section>
+
+<section class="how-it-works" id="how">
+  <div class="section-header">
+    <div class="section-tag" style="color: var(--gold-light);">How It Works</div>
+    <h2 class="section-title" style="color: white;">One Network,<br><em style="color: var(--gold-light);">Local Everywhere</em></h2>
+  </div>
+  <div class="how-grid">
+    <div class="how-step"><div class="how-number">01</div><h3>Pick Your Region</h3><p>Each area in Mexico has its own dedicated site with deep local knowledge — not a generic nationwide search.</p></div>
+    <div class="how-step"><div class="how-number">02</div><h3>Filter by Type & Term</h3><p>Need a house for a year? A hostel for a week? A condo for a month? Each site covers every property type and rental length.</p></div>
+    <div class="how-step"><div class="how-number">03</div><h3>Connect Directly</h3><p>No platform fees or middleman markups. Reach property owners and managers directly through our trusted network.</p></div>
+  </div>
+</section>
+
+<section class="audience" id="who">
+  <div class="section-header">
+    <div class="section-tag">Who It's For</div>
+    <h2 class="section-title">Built for <em>Everyone</em></h2>
+  </div>
+  <div class="audience-grid">
+    <div class="audience-card"><div class="audience-card-emoji">🧳</div><h3>Travelers & Tourists</h3><p>Find vacation rentals, hostels, or short-stay apartments for your next Mexican getaway — without the big platform fees.</p></div>
+    <div class="audience-card"><div class="audience-card-emoji">💼</div><h3>Expats & Relocators</h3><p>Moving to Mexico? Browse long-term houses, furnished apartments, and condos with year-round leases in communities you'll love.</p></div>
+    <div class="audience-card"><div class="audience-card-emoji">🌐</div><h3>Digital Nomads</h3><p>Monthly furnished rentals and co-living spaces with reliable WiFi, desks, and communities built for remote work.</p></div>
+    <div class="audience-card"><div class="audience-card-emoji">🏗️</div><h3>Property Owners</h3><p>List any type of property — short or long-term — on the regional site that fits. Reach the right tenants with zero listing fees.</p></div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="about-inner">
+    <div class="about-visual">
+      <div class="about-map">
+        <svg viewBox="0 0 400 350" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50,80 Q80,60 120,55 L160,50 Q200,48 230,55 L270,65 Q300,72 320,90 L340,110 Q350,130 345,155 L335,180 Q325,200 310,215 L290,230 Q270,240 250,235 L230,225 Q210,215 195,225 L175,240 Q160,255 150,275 L140,295 Q130,310 115,305 L100,290 Q90,275 85,255 L80,235 Q75,215 70,195 L65,175 Q55,150 50,130 L48,110 Q45,95 50,80 Z" fill="none" stroke="var(--sand-dark)" stroke-width="2" />
+          <circle class="map-dot" cx="155" cy="265" r="6" />
+          <circle class="map-dot" cx="140" cy="175" r="6" />
+          <circle cx="170" cy="140" r="4" fill="var(--sand-dark)" opacity="0.4" />
+          <circle cx="280" cy="115" r="4" fill="var(--sand-dark)" opacity="0.4" />
+          <circle cx="100" cy="140" r="4" fill="var(--sand-dark)" opacity="0.4" />
+          <circle cx="220" cy="200" r="4" fill="var(--sand-dark)" opacity="0.4" />
+          <text x="168" y="269" font-family="DM Sans" font-size="9" fill="var(--terracotta)" font-weight="600">Puerto Escondido</text>
+          <text x="90" y="170" font-family="DM Sans" font-size="9" fill="var(--terracotta)" font-weight="600">Lake Chapala</text>
+          <line x1="140" y1="175" x2="155" y2="265" stroke="var(--terracotta)" stroke-width="1" stroke-dasharray="4,4" opacity="0.3" />
+        </svg>
+      </div>
+    </div>
+    <div class="about-content">
+      <h2>A Growing Network of <em>Local</em> Rental Markets</h2>
+      <p>The Renta Mexico Network isn't a single listings platform — it's a connected family of regional rental sites, each built with on-the-ground knowledge of its market. We cover the full spectrum: vacation stays, long-term leases, hostels, condos, houses, rooms, co-living, commercial space, and everything in between.</p>
+      <p>Whether you're looking for a beachfront casa in Puerto Escondido or a year-long apartment at Lake Chapala, our network delivers consistency and quality while respecting what makes each region unique.</p>
+      <div class="about-features">
+        <div class="about-feature"><div class="about-feature-icon">✓</div><div class="about-feature-text"><h4>Every Rental Type</h4><p>Not just vacations — houses, hostels, long-term, commercial, and more</p></div></div>
+        <div class="about-feature"><div class="about-feature-icon">✓</div><div class="about-feature-text"><h4>Locally Managed</h4><p>Each destination site built with real knowledge of the area</p></div></div>
+        <div class="about-feature"><div class="about-feature-icon">✓</div><div class="about-feature-text"><h4>Direct Connections</h4><p>No platform fees — reach owners and managers directly</p></div></div>
+        <div class="about-feature"><div class="about-feature-icon">✓</div><div class="about-feature-text"><h4>Always Growing</h4><p>New regions and property types launching across Mexico</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-banner" id="contact">
+  <h2>Have a Property in <em>México?</em></h2>
+  <p>List any type of rental — houses, apartments, hostels, commercial spaces, short-term or long-term — on the regional site that fits your market. No listing fees.</p>
+  <a href="mailto:hello@rentamxn.com" class="btn btn-primary" style="background: white; color: var(--midnight);">Get In Touch <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo" style="margin-bottom: 0.5rem;"><div class="nav-logo-icon">Rm</div><div class="nav-logo-text">Renta<span>MXN</span></div></a>
+        <p>Mexico's rental network — connecting renters with every kind of property across the country's best regions. Not just vacations. Every way to live.</p>
+      </div>
+      <div class="footer-col"><h4>Destinations</h4><ul><li><a href="https://rentapuertoescondido.com" target="_blank">Puerto Escondido</a></li><li><a href="https://rentalakechapala.com" target="_blank">Lake Chapala</a></li><li><a href="#">More Coming Soon</a></li></ul></div>
+      <div class="footer-col"><h4>Rental Types</h4><ul><li><a href="#types">Houses & Villas</a></li><li><a href="#types">Condos & Apartments</a></li><li><a href="#types">Hostels & Rooms</a></li><li><a href="#types">Long-Term Leases</a></li><li><a href="#types">Commercial Spaces</a></li></ul></div>
+      <div class="footer-col"><h4>Network</h4><ul><li><a href="#about">About Us</a></li><li><a href="#how">How It Works</a></li><li><a href="#contact">List a Property</a></li><li><a href="mailto:hello@rentamxn.com">Contact</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Renta Mexico Network (rentamxn.com). All rights reserved.</p>
+      <div class="footer-socials"><a href="#" aria-label="Instagram">IG</a><a href="#" aria-label="Facebook">FB</a><a href="#" aria-label="WhatsApp">WA</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
+const toggle = document.getElementById('navToggle');
+const links = document.getElementById('navLinks');
+toggle.addEventListener('click', () => links.classList.toggle('open'));
+links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) { entry.target.style.opacity = '1'; entry.target.style.transform = 'translateY(0)'; } });
+}, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('.dest-card, .how-step, .about-feature, .prop-card, .audience-card').forEach(el => {
+  el.style.opacity = '0'; el.style.transform = 'translateY(30px)'; el.style.transition = 'opacity 0.7s ease, transform 0.7s ease'; obs.observe(el);
+});
+document.querySelectorAll('.dest-card').forEach((c, i) => c.style.transitionDelay = `${i * 0.15}s`);
+document.querySelectorAll('.how-step').forEach((c, i) => c.style.transitionDelay = `${i * 0.15}s`);
+document.querySelectorAll('.prop-card').forEach((c, i) => c.style.transitionDelay = `${i * 0.08}s`);
+document.querySelectorAll('.about-feature').forEach((c, i) => c.style.transitionDelay = `${i * 0.1}s`);
+document.querySelectorAll('.audience-card').forEach((c, i) => c.style.transitionDelay = `${i * 0.12}s`);
+</script>
+</body>
+</html>
